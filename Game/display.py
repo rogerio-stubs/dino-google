@@ -1,21 +1,22 @@
-import pygame as pg
 import os
+import pygame as pg
 
 import Server.dinosaur as dino
 import Server.cactus as cac
 
 DIC_PATH = os.path.abspath(os.path.dirname(__file__))
 
-def loadImage(imageName):
-    image = pg.image.load(DIC_PATH + imageName)
-    imageSize = image.get_rect()
-    return image, imageSize
 
-def render(display, targetDino, targetCactus):
+def load_image(image_name):
+    image = pg.image.load(DIC_PATH + image_name)
+    image_size = image.get_rect()
+    return image, image_size
+
+def render(display, targer_dino, target_cactus):
     display.fill((255, 255, 255))
-    display.blit(targetDino.image, [targetDino.positionX, targetDino.positionY])
-    # if targetCactus.show == True:
-    display.blit(targetCactus.image, [targetCactus.positionX, targetCactus.positionY])
+    display.blit(targer_dino.image, [targer_dino.position_x, targer_dino.position_y])
+    # if target_cactus.show == True:
+    display.blit(target_cactus.image, [target_cactus.position_x, target_cactus.position_y])
     pg.display.update()
 
 def screen():
@@ -24,24 +25,24 @@ def screen():
     display = pg.display.set_mode((800, 800)) # largura / altura
     pg.display.set_caption("T-Rex Running")
 
-    imageDino, dimensionsDino = loadImage("/assets/dino.png")
-    imageDino = pg.transform.scale(imageDino, [64, 64])
-    TRex = dino.Dinosaur(200, 350, imageDino)
+    image_dino, dimensions_dino = load_image("/assets/dino.png")
+    image_dino = pg.transform.scale(image_dino, [64, 64])
+    t_rex = dino.Dinosaur(200, 350, image_dino)
 
-    imageCactus, dimensionsCactus = loadImage("/assets/cactus.jpg")
-    imageCactus = pg.transform.scale(imageCactus, [32, 32])
-    cactus = cac.Cactus(750, 370, imageCactus)
+    image_cactus, dimensions_cactus = load_image("/assets/cactus.jpg")
+    image_cactus = pg.transform.scale(image_cactus, [32, 32])
+    cactus = cac.Cactus(750, 370, 5, image_cactus)
 
     close = False
-    isJump = False
-    JumpCount = 10
+    is_jump = False
+    jump_count = 10
 
 
-    while close != True:
+    while close is not True:
         pg.time.delay(20)
-        render(display, TRex, cactus)
+        render(display, t_rex, cactus)
 
-        for event in pg.event.get():        
+        for event in pg.event.get():
             if event.type == pg.QUIT:
                 close = True
 
@@ -49,27 +50,21 @@ def screen():
 
         if keys[pg.K_UP]:
             # Pular
-            isJump = True
+            is_jump = True
 
         if keys[pg.K_DOWN]:
             # Abaixar
             # Substituir imagem pela do dino abaixado
             print('Abaixar')
-
-        
-        if isJump:
-            if JumpCount >= -10:
-                TRex.jump(JumpCount)
-                JumpCount -= 1
+        if is_jump:
+            if jump_count >= -10:
+                t_rex.jump(jump_count)
+                jump_count -= 1
             else:
-                JumpCount = 10
-                isJump = False
+                jump_count = 10
+                is_jump = False
 
-        print(cactus.show)
-        if cactus.show:
-            cactus.changePosition()
-        else:
-            cactus.randomCactus()
+        cactus.change_position()
 
     pg.quit()
 
