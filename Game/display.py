@@ -13,13 +13,15 @@ CACTUS_DIMENSIONS = [[443, 0, 37, 72], [480, 0, 34, 72], [514, 0, 34, 72], [548,
 DINOSAUR_DIMENSIONS = [[1338, 0, 88, 96], [1514, 0, 88, 96], [1602, 0, 88, 96],
                        [1866, 0, 118, 96], [1984, 0, 120, 96]]
 
-PTERODACTYL_DIMENSIONS = [[259, 0, 93, 84], [352, 0, 92, 84]]
+BIRD_DIMENSIONS = [[259, 0, 93, 84], [352, 0, 92, 84]]
 
 
 def load_image(image_name):
-    image = pg.image.load(DIC_PATH + image_name)
-    # image_scale = pg.transform.scale(image, [64, 64])
-    return image
+    image_general = pg.image.load(DIC_PATH + image_name)
+    images_dino = [image_general.subsurface(dimension) for dimension in DINOSAUR_DIMENSIONS]
+    images_cactus = [image_general.subsurface(dimension) for dimension in CACTUS_DIMENSIONS]
+    images_bird = [image_general.subsurface(dimension) for dimension in BIRD_DIMENSIONS]
+    return images_dino, images_cactus, images_bird
 
 def render(display, target_dino):
     display.fill((255, 255, 255))
@@ -33,28 +35,19 @@ def screen():
     display = pg.display.set_mode((800, 800)) # largura / altura
     pg.display.set_caption("T-Rex Running")
 
-    images_bird = list()
-    images_dino = list()
-
-    image_general = load_image("/assets/image_general.png")    
-    for linha in range(0, 2):
-        images_bird.append(image_general.subsurface(PTERODACTYL_DIMENSIONS[linha]))
-
-    for linha in range(0, 5):
-        images_dino.append(image_general.subsurface(DINOSAUR_DIMENSIONS[linha]))
-
+    images_dino, images_cactus, images_bird = load_image("/assets/image_general.png")
     t_rex = dino.Dinosaur(200, 350, images_dino)
-
-    # image_cactus = load_image("/assets/cactus_general.png")
-    # cactus = cac.Cactus(750, 370, 5, image_cactus)
+    cactus = cac.Cactus(750, 370, 5, images_cactus)
+    
 
     close = False
     is_jump = False
+    is_down = False
     jump_count = 10
 
 
     while close is not True:
-        pg.time.delay(150)
+        pg.time.delay(20)
         render(display, t_rex)
 
         for event in pg.event.get():
@@ -64,12 +57,10 @@ def screen():
         keys = pg.key.get_pressed()
 
         if keys[pg.K_UP]:
-            # Pular
             is_jump = True
 
         if keys[pg.K_DOWN]:
-            t_rex.down()
-            print('Abaixar')
+            is_down = True
 
         if is_jump:
             if jump_count >= -10:
@@ -78,8 +69,12 @@ def screen():
             else:
                 jump_count = 10
                 is_jump = False
-
-        t_rex.walk()
+        elif is_down:
+            t_rex.down()
+            is_down = False
+            print('baixo')
+        else:
+            t_rex.walk()
 
     pg.quit()
 

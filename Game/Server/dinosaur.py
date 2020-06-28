@@ -11,7 +11,7 @@ class Dinosaur(object):
 
     def jump(self, jump_count):
         self.position_y -= (jump_count * abs(jump_count)) * 0.2
-        self.current_image = self.image_jump
+        self.current_image = self.image_jump[0]
 
     def down(self):
         if self.index:
