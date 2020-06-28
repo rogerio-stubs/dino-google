@@ -1,12 +1,18 @@
 import random as rad
 
 class Cactus(object):
-    def __init__(self, position_x, position_y, speed, image):
+    def __init__(self, position_x, position_y, images):
         self.position_x = position_x
         self.position_y = position_y
-        self.speed = speed
-        self.image = image
-        self.show = True
+        self.images = images
+        self.speed = 5
+        self.matrix_images = list()
+        self.current_image = self.images[0]
+
+    def create_matrix_position(self):
+        # matriz nx2 com [tempo, imagem]
+        for indice in range(0, 100):
+            self.matrix_images.append(indice)
 
     def change_position(self):
         # O cacto irá aparecer somente quando:
@@ -15,11 +21,8 @@ class Cactus(object):
         # Tratando como self.position limita a um unico caacto
         self.position_x = self.position_x - self.speed
 
-        if self.position_x:
-            self.show = False
-
-    def random_cactus(self):
-        self.show = rad.choice([True, False])
+        if self.position_x == 0:
+            self.position_x = 750
 
     def speed_up(self):
         # A velocidade aumenta depois de determinado tempo ou qtd pontos

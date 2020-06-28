@@ -1,8 +1,10 @@
+import time
 import os
 import pygame as pg
 
 import Server.dinosaur as dino
 import Server.cactus as cac
+import Server.bird as bd
 
 DIC_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -23,10 +25,11 @@ def load_image(image_name):
     images_bird = [image_general.subsurface(dimension) for dimension in BIRD_DIMENSIONS]
     return images_dino, images_cactus, images_bird
 
-def render(display, target_dino):
+def render(display, target_dino, target_cactus, target_bird):
     display.fill((255, 255, 255))
     display.blit(target_dino.current_image, [target_dino.position_x, target_dino.position_y])
-    # display.blit(target_cactus.image, [target_cactus.position_x, target_cactus.position_y])
+    display.blit(target_cactus.current_image, [target_cactus.position_x, target_cactus.position_y])
+    display.blit(target_bird.current_image, [target_bird.position_x, target_bird.position_y])
     pg.display.update()
 
 def screen():
@@ -37,8 +40,8 @@ def screen():
 
     images_dino, images_cactus, images_bird = load_image("/assets/image_general.png")
     t_rex = dino.Dinosaur(200, 350, images_dino)
-    cactus = cac.Cactus(750, 370, 5, images_cactus)
-    
+    cactus = cac.Cactus(750, 370, images_cactus)
+    bird = bd.Bird(750, 320, images_bird)
 
     close = False
     is_jump = False
@@ -47,8 +50,8 @@ def screen():
 
 
     while close is not True:
-        pg.time.delay(20)
-        render(display, t_rex)
+        pg.time.delay(30)
+        render(display, t_rex, cactus, bird)
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -70,11 +73,17 @@ def screen():
                 jump_count = 10
                 is_jump = False
         elif is_down:
+            # time.sleep(0.09)
             t_rex.down()
             is_down = False
-            print('baixo')
         else:
+            # time.sleep(0.09)
             t_rex.walk()
+            
+        cactus.change_position()
+
+        bird.change_position()
+        bird.fly()
 
     pg.quit()
 
