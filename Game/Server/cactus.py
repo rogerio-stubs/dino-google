@@ -20,7 +20,7 @@ class Cactus(object):
 
     def random_cactus(self):
         self.show = rad.choice([True, False])
-        
+
     def speed_up(self):
         # A velocidade aumenta depois de determinado tempo ou qtd pontos
         pass
