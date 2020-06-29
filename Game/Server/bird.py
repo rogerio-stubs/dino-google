@@ -1,4 +1,4 @@
-class Bird(object):
+class Bird(object): # Tb é um dinossauro
     def __init__(self, position_x, position_y, images):
         self.position_x = position_x
         self.position_y = position_y

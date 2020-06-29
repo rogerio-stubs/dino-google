@@ -1,4 +1,3 @@
-import time
 import os
 import pygame as pg
 
@@ -8,9 +7,8 @@ import Server.bird as bd
 
 DIC_PATH = os.path.abspath(os.path.dirname(__file__))
 
-CACTUS_DIMENSIONS = [[443, 0, 37, 72], [480, 0, 34, 72], [514, 0, 34, 72], [548, 0, 34, 72],
-                     [582, 0, 34, 72], [616, 0, 35, 72], [651, 0, 51, 102], [702, 0, 49, 102],
-                     [751, 0, 52, 102], [803, 0, 47, 102], [850, 0, 102, 102]]
+CACTUS_DIMENSIONS = [[443, 0, 37, 72], [480, 0, 68, 72], [548, 0, 102, 72],
+                     [651, 0, 51, 102], [702, 0, 102, 102], [803, 0, 150, 102]]
 
 DINOSAUR_DIMENSIONS = [[1338, 0, 88, 96], [1514, 0, 88, 96], [1602, 0, 88, 96],
                        [1866, 0, 118, 96], [1984, 0, 120, 96]]
@@ -47,7 +45,13 @@ def screen():
     is_jump = False
     is_down = False
     jump_count = 10
+    count_frame_bird = 0
+    count_frame_dino = 0
 
+    # máximo dois elementos em tela
+    # cactus + bird
+    # cactu + cactu
+    #  Alterar funcionamento do frame
 
     while close is not True:
         pg.time.delay(30)
@@ -73,17 +77,25 @@ def screen():
                 jump_count = 10
                 is_jump = False
         elif is_down:
-            # time.sleep(0.09)
-            t_rex.down()
+            if count_frame_dino > 3:
+                t_rex.down()
+                count_frame_dino = 0
+            count_frame_dino += 1
             is_down = False
         else:
-            # time.sleep(0.09)
-            t_rex.walk()
-            
+            if count_frame_dino > 3:
+                t_rex.walk()
+                count_frame_dino = 0
+            count_frame_dino += 1
+
+            if count_frame_bird > 15:
+                bird.fly()
+                count_frame_bird = 0
+            count_frame_bird += 1
+
         cactus.change_position()
 
         bird.change_position()
-        bird.fly()
 
     pg.quit()
 
