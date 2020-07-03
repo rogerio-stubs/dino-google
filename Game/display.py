@@ -4,6 +4,7 @@ import pygame as pg
 import Server.dinosaur as dino
 import Server.cactus as cac
 import Server.bird as bd
+import Server.background as bg
 
 DIC_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -15,16 +16,19 @@ DINOSAUR_DIMENSIONS = [[1338, 0, 88, 96], [1514, 0, 88, 96], [1602, 0, 88, 96],
 
 BIRD_DIMENSIONS = [[259, 0, 93, 84], [352, 0, 92, 84]]
 
+FLOOR_DIMENSIONS = [[2, 104, 2400, 26]]
 
 def load_image(image_name):
     image_general = pg.image.load(DIC_PATH + image_name)
-    images_dino = [image_general.subsurface(dimension) for dimension in DINOSAUR_DIMENSIONS]
+    image_dino = [image_general.subsurface(dimension) for dimension in DINOSAUR_DIMENSIONS]
     images_cactus = [image_general.subsurface(dimension) for dimension in CACTUS_DIMENSIONS]
-    images_bird = [image_general.subsurface(dimension) for dimension in BIRD_DIMENSIONS]
-    return images_dino, images_cactus, images_bird
+    image_bird = [image_general.subsurface(dimension) for dimension in BIRD_DIMENSIONS]
+    image_floor = [image_general.subsurface(dimension) for dimension in FLOOR_DIMENSIONS]
+    return image_dino, images_cactus, image_bird, image_floor
 
-def render(display, target_dino, target_cactus, target_bird):
+def render(display, target_dino, target_cactus, target_bird, target_floor):
     display.fill((255, 255, 255))
+    display.blit(target_floor.current_image, [target_floor.position_x, target_floor.position_y])
     display.blit(target_dino.current_image, [target_dino.position_x, target_dino.position_y])
     display.blit(target_cactus.current_image, [target_cactus.position_x, target_cactus.position_y])
     display.blit(target_bird.current_image, [target_bird.position_x, target_bird.position_y])
@@ -36,10 +40,11 @@ def screen():
     display = pg.display.set_mode((800, 800)) # largura / altura
     pg.display.set_caption("T-Rex Running")
 
-    images_dino, images_cactus, images_bird = load_image("/assets/image_general.png")
-    t_rex = dino.Dinosaur(200, 350, images_dino)
+    image_dino, images_cactus, image_bird, image_floor = load_image("/assets/image_general.png")
+    t_rex = dino.Dinosaur(200, 350, image_dino)
     cactus = cac.Cactus(750, 370, images_cactus)
-    bird = bd.Bird(750, 320, images_bird)
+    bird = bd.Bird(750, 320, image_bird)
+    floor = bg.Background(0, 420, image_floor)
 
     close = False
     is_jump = False
@@ -55,7 +60,7 @@ def screen():
 
     while close is not True:
         pg.time.delay(30)
-        render(display, t_rex, cactus, bird)
+        render(display, t_rex, cactus, bird, floor)
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
