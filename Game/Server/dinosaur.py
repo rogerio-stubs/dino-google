@@ -14,6 +14,7 @@ class Dinosaur(object):
         self.current_image = self.image_jump[0]
 
     def down(self):
+        # corrigir em relação a imagem.
         self.current_image = self.image_down[self.index]
 
         if self.index:

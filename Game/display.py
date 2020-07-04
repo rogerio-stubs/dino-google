@@ -8,13 +8,13 @@ import Server.background as bg
 
 DIC_PATH = os.path.abspath(os.path.dirname(__file__))
 
-CACTUS_DIMENSIONS = [[443, 0, 37, 72], [480, 0, 68, 72], [548, 0, 102, 72],
-                     [651, 0, 51, 102], [702, 0, 102, 102], [803, 0, 150, 102]]
+CACTUS_DIMENSIONS = [[446, 0, 34, 72], [480, 0, 68, 72], [548, 0, 102, 72],
+                     [652, 0, 50, 102], [702, 0, 102, 102], [802, 0, 150, 102]]
 
 DINOSAUR_DIMENSIONS = [[1338, 0, 88, 96], [1514, 0, 88, 96], [1602, 0, 88, 96],
-                       [1866, 0, 118, 96], [1984, 0, 120, 96]]
+                       [1866, 36, 118, 60], [1984, 36, 120, 60]]
 
-BIRD_DIMENSIONS = [[259, 0, 93, 84], [352, 0, 92, 84]]
+BIRD_DIMENSIONS = [[260, 0, 93, 84], [352, 0, 92, 84]]
 
 FLOOR_DIMENSIONS = [[2, 104, 2400, 26]]
 
@@ -26,9 +26,10 @@ def load_image(image_name):
     image_floor = [image_general.subsurface(dimension) for dimension in FLOOR_DIMENSIONS]
     return image_dino, images_cactus, image_bird, image_floor
 
-def render(display, target_dino, target_cactus, target_bird, target_floor):
+def render(display, target_dino, target_cactus, target_bird, target_start_floor, target_final_floor):
     display.fill((255, 255, 255))
-    display.blit(target_floor.current_image, [target_floor.position_x, target_floor.position_y])
+    display.blit(target_start_floor.current_image, [target_start_floor.position_x, target_start_floor.position_y])
+    display.blit(target_final_floor.current_image, [target_final_floor.position_x, target_final_floor.position_y])
     display.blit(target_dino.current_image, [target_dino.position_x, target_dino.position_y])
     display.blit(target_cactus.current_image, [target_cactus.position_x, target_cactus.position_y])
     display.blit(target_bird.current_image, [target_bird.position_x, target_bird.position_y])
@@ -44,7 +45,8 @@ def screen():
     t_rex = dino.Dinosaur(200, 350, image_dino)
     cactus = cac.Cactus(750, 370, images_cactus)
     bird = bd.Bird(750, 320, image_bird)
-    floor = bg.Background(0, 420, image_floor)
+    start_floor = bg.Background(0, 420, image_floor)    
+    final_floor = bg.Background(2400, 420, image_floor)
 
     close = False
     is_jump = False
@@ -53,14 +55,8 @@ def screen():
     count_frame_bird = 0
     count_frame_dino = 0
 
-    # máximo dois elementos em tela
-    # cactus + bird
-    # cactu + cactu
-    #  Alterar funcionamento do frame
-
     while close is not True:
         pg.time.delay(30)
-        render(display, t_rex, cactus, bird, floor)
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -101,7 +97,9 @@ def screen():
         cactus.change_position()
 
         bird.change_position()
-
+        start_floor.move()
+        final_floor.move()
+        render(display, t_rex, cactus, bird, start_floor, final_floor)
     pg.quit()
 
 
