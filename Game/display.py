@@ -26,13 +26,13 @@ def load_image(image_name):
     image_floor = [image_general.subsurface(dimension) for dimension in FLOOR_DIMENSIONS]
     return image_dino, images_cactus, image_bird, image_floor
 
-def render(display, target_dino, target_cactus, target_bird, target_start_floor, target_final_floor):
+def render(display, obj_dino, obj_cactus, obj_bird, obj_s_floor, obj_f_floor):
     display.fill((255, 255, 255))
-    display.blit(target_start_floor.current_image, [target_start_floor.position_x, target_start_floor.position_y])
-    display.blit(target_final_floor.current_image, [target_final_floor.position_x, target_final_floor.position_y])
-    display.blit(target_dino.current_image, [target_dino.position_x, target_dino.position_y])
-    display.blit(target_cactus.current_image, [target_cactus.position_x, target_cactus.position_y])
-    display.blit(target_bird.current_image, [target_bird.position_x, target_bird.position_y])
+    display.blit(obj_s_floor.current_image, [obj_s_floor.position_x, obj_s_floor.position_y])
+    display.blit(obj_f_floor.current_image, [obj_f_floor.position_x, obj_f_floor.position_y])
+    display.blit(obj_dino.current_image, [obj_dino.position_x, obj_dino.position_y])
+    display.blit(obj_cactus.current_image, [obj_cactus.position_x, obj_cactus.position_y])
+    display.blit(obj_bird.current_image, [obj_bird.position_x, obj_bird.position_y])
     pg.display.update()
 
 def screen():
@@ -45,7 +45,7 @@ def screen():
     t_rex = dino.Dinosaur(200, 350, image_dino)
     cactus = cac.Cactus(750, 370, images_cactus)
     bird = bd.Bird(750, 320, image_bird)
-    start_floor = bg.Background(0, 420, image_floor)    
+    start_floor = bg.Background(0, 420, image_floor)
     final_floor = bg.Background(2400, 420, image_floor)
 
     close = False
@@ -81,6 +81,7 @@ def screen():
             if count_frame_dino > 3:
                 t_rex.down()
                 count_frame_dino = 0
+            t_rex.coordinates(start_floor)
             count_frame_dino += 1
             is_down = False
         else:
@@ -88,6 +89,7 @@ def screen():
                 t_rex.walk()
                 count_frame_dino = 0
             count_frame_dino += 1
+            t_rex.coordinates(start_floor)
 
             if count_frame_bird > 15:
                 bird.fly()
@@ -98,7 +100,7 @@ def screen():
 
         bird.change_position()
         start_floor.move()
-        final_floor.move()
+        final_floor.move()        
         render(display, t_rex, cactus, bird, start_floor, final_floor)
     pg.quit()
 

@@ -9,14 +9,17 @@ class Dinosaur(object):
         self.image_walk = [self.images[1], self.images[2]]
         self.image_down = [self.images[3], self.images[4]]
 
+    def coordinates(self, floor):
+        dimensions_dino = self.current_image.get_rect()
+        dimensions_floor = floor.current_image.get_rect()
+        self.position_y = floor.position_y + dimensions_floor[3] - dimensions_dino[3]
+
     def jump(self, jump_count):
         self.position_y -= (jump_count * abs(jump_count)) * 0.2
         self.current_image = self.image_jump[0]
 
     def down(self):
-        # corrigir em relação a imagem.
         self.current_image = self.image_down[self.index]
-
         if self.index:
             self.index = False
         else:
