@@ -28,6 +28,7 @@ def load_image(image_name):
 
 def render(display, obj_dino, obj_cactus, obj_bird, obj_s_floor, obj_f_floor):
     display.fill((255, 255, 255))
+    # Entender o método blits
     display.blit(obj_s_floor.current_image, [obj_s_floor.position_x, obj_s_floor.position_y])
     display.blit(obj_f_floor.current_image, [obj_f_floor.position_x, obj_f_floor.position_y])
     display.blit(obj_dino.current_image, [obj_dino.position_x, obj_dino.position_y])
@@ -43,7 +44,8 @@ def screen():
 
     image_dino, images_cactus, image_bird, image_floor = load_image("/assets/image_general.png")
     t_rex = dino.Dinosaur(200, 350, image_dino)
-    cactus = cac.Cactus(750, 370, images_cactus)
+    cactus = cac.Cactus(370, images_cactus)
+
     bird = bd.Bird(750, 320, image_bird)
     start_floor = bg.Background(0, 420, image_floor)
     final_floor = bg.Background(2400, 420, image_floor)
@@ -54,9 +56,15 @@ def screen():
     jump_count = 10
     count_frame_bird = 0
     count_frame_dino = 0
+    speed = 10
 
     while close is not True:
         pg.time.delay(30)
+
+        start_floor.speed_up(speed)
+        final_floor.speed_up(speed)
+        bird.speed_up(speed)
+        cactus.speed_up(speed)
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -100,7 +108,7 @@ def screen():
 
         bird.change_position()
         start_floor.move()
-        final_floor.move()        
+        final_floor.move()
         render(display, t_rex, cactus, bird, start_floor, final_floor)
     pg.quit()
 
