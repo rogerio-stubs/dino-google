@@ -1,6 +1,7 @@
 class Bird(object): # Tb é um dinossauro
-    def __init__(self, position_x, position_y, images):
-        self.position_x = position_x
+    def __init__(self, source, position_y, images):
+        self.source = source
+        self.position_x = source
         self.position_y = position_y
         self.images = images
         self.index = True
@@ -11,7 +12,7 @@ class Bird(object): # Tb é um dinossauro
         self.position_x = self.position_x - self.speed
 
         if self.position_x == 0:
-            self.position_x = 750
+            self.position_x = self.source
 
     def fly(self):
         if self.index:
