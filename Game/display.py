@@ -12,7 +12,9 @@ DIC_PATH = os.path.abspath(os.path.dirname(__file__))
 
 SQUARE_X, SQUARE_Y = 800, 800
 
-OUT_SCREEN = SQUARE_X + 5
+RIGHT_SCREEN = SQUARE_X + 5
+
+LEFT_SCREEN = SQUARE_X * -1
 
 CACTUS_DIMENSIONS = [[446, 0, 34, 72], [480, 0, 68, 72], [548, 0, 102, 72],
                      [652, 0, 50, 102], [702, 0, 102, 102], [802, 0, 150, 102]]
@@ -43,10 +45,6 @@ def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor,
     display.blit(obj_bird.current_image, [obj_bird.position_x, obj_bird.position_y])
     pg.display.update()
 
-def obstacle_random(first_cactus, second_cactus, floor):
-    first_cactus.choose_image(OUT_SCREEN, floor)
-    second_cactus.choose_image(OUT_SCREEN, floor)
-
 def screen():
     pg.init()
 
@@ -56,10 +54,10 @@ def screen():
     image_dino, images_cactus, image_bird, image_floor = load_image("/assets/image_general.png")
     t_rex = dino.Dinosaur(200, 350, image_dino)
 
-    first_cactus = cac.Cactus(OUT_SCREEN, 370, images_cactus)
-    second_cactus = cac.Cactus(OUT_SCREEN, 370, images_cactus)
+    first_cactus = cac.Cactus(RIGHT_SCREEN, 370, images_cactus)
+    second_cactus = cac.Cactus(LEFT_SCREEN, 370, images_cactus)
 
-    bird = bd.Bird(OUT_SCREEN, 320, image_bird)
+    bird = bd.Bird(RIGHT_SCREEN, 320, image_bird)
 
     start_floor = bg.Background(0, 420, image_floor)
     final_floor = bg.Background(2400, 420, image_floor)
@@ -67,12 +65,12 @@ def screen():
     close = False
     is_jump = False
     is_down = False
+    obstacle_cactus = False
     jump_count = 10
     count_frame_bird = 0
     count_frame_dino = 0
-    speed = 40
+    speed = 10
     game_time = 0
-    obstacle_time = 0
 
     while close is not True:
         pg.time.delay(30)
@@ -84,7 +82,6 @@ def screen():
         second_cactus.speed_up(speed)
 
         game_time += speed
-        obstacle_time += speed / 100
 
         # if game_time > 400:
         #     game_time = 0
@@ -128,16 +125,17 @@ def screen():
                 count_frame_bird = 0
             count_frame_bird += 1
 
-        if first_cactus.position_x == -100 and second_cactus.position_x == -100:
-            obstacle_random(first_cactus, second_cactus, start_floor)
-            first_cactus.position_x = OUT_SCREEN
-            second_cactus.position_x = OUT_SCREEN
+        if first_cactus.position_x < 100 and obstacle_cactus is False:
+            second_cactus.choose_image(RIGHT_SCREEN, start_floor)
+            obstacle_cactus = True
 
-        if first_cactus.position_x < 0:
-            second_cactus.change_position()
-        else:
-            first_cactus.change_position()
+        if second_cactus.position_x < 100 and obstacle_cactus is True:
+            first_cactus.choose_image(RIGHT_SCREEN, start_floor)
+            obstacle_cactus = False
 
+
+        first_cactus.change_position()
+        second_cactus.change_position()
         bird.change_position()
         start_floor.move()
         final_floor.move()

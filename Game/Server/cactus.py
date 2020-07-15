@@ -19,10 +19,6 @@ class Cactus(object):
 
     def change_position(self):
         self.position_x = self.position_x - self.speed
-        restart = self.speed * (-2)
-
-        if self.position_x <= restart:
-            self.position_x = -100
 
     def speed_up(self, value):
         self.speed = value
