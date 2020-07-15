@@ -32,19 +32,20 @@ def load_image(image_name):
     image_floor = [image_general.subsurface(dimension) for dimension in FLOOR_DIMENSIONS]
     return image_dino, images_cactus, image_bird, image_floor
 
-def render(display, obj_dino, obj_cactus, obj_bird, obj_s_floor, obj_f_floor):
+def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor, obj_f_floor):
     display.fill((255, 255, 255))
     # Entender o método blits
     display.blit(obj_s_floor.current_image, [obj_s_floor.position_x, obj_s_floor.position_y])
     display.blit(obj_f_floor.current_image, [obj_f_floor.position_x, obj_f_floor.position_y])
     display.blit(obj_dino.current_image, [obj_dino.position_x, obj_dino.position_y])
-    display.blit(obj_cactus.current_image, [obj_cactus.position_x, obj_cactus.position_y])
+    display.blit(obj_f_cactus.current_image, [obj_f_cactus.position_x, obj_f_cactus.position_y])
+    display.blit(obj_s_cactus.current_image, [obj_s_cactus.position_x, obj_s_cactus.position_y])
     display.blit(obj_bird.current_image, [obj_bird.position_x, obj_bird.position_y])
     pg.display.update()
 
-def random_obstacle(cactus, floor):
-    if cactus.position_x < 0:
-        cactus.choose_image(SQUARE_X)
+def obstacle_random(first_cactus, second_cactus, floor):
+    first_cactus.choose_image(OUT_SCREEN, floor)
+    second_cactus.choose_image(OUT_SCREEN, floor)
 
 def screen():
     pg.init()
@@ -69,7 +70,9 @@ def screen():
     jump_count = 10
     count_frame_bird = 0
     count_frame_dino = 0
-    speed = 10
+    speed = 40
+    game_time = 0
+    obstacle_time = 0
 
     while close is not True:
         pg.time.delay(30)
@@ -78,6 +81,14 @@ def screen():
         final_floor.speed_up(speed)
         bird.speed_up(speed)
         first_cactus.speed_up(speed)
+        second_cactus.speed_up(speed)
+
+        game_time += speed
+        obstacle_time += speed / 100
+
+        # if game_time > 400:
+        #     game_time = 0
+        #     speed += 5
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -117,13 +128,21 @@ def screen():
                 count_frame_bird = 0
             count_frame_bird += 1
 
-        first_cactus.change_position()
+        if first_cactus.position_x == -100 and second_cactus.position_x == -100:
+            obstacle_random(first_cactus, second_cactus, start_floor)
+            first_cactus.position_x = OUT_SCREEN
+            second_cactus.position_x = OUT_SCREEN
+
+        if first_cactus.position_x < 0:
+            second_cactus.change_position()
+        else:
+            first_cactus.change_position()
 
         bird.change_position()
         start_floor.move()
         final_floor.move()
-        random_obstacle(first_cactus, start_floor)
-        render(display, t_rex, first_cactus, bird, start_floor, final_floor)
+
+        render(display, t_rex, first_cactus, second_cactus, bird, start_floor, final_floor)
     pg.quit()
 
 
