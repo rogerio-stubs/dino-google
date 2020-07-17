@@ -26,6 +26,14 @@ BIRD_DIMENSIONS = [[260, 0, 93, 84], [352, 0, 92, 84]]
 
 FLOOR_DIMENSIONS = [[2, 104, 2400, 26]]
 
+def dimensions_game(delta_x, delta_y):
+    # Melhorar nomes
+    extremes = (delta_x * 20) / 100
+    bottom = (delta_y * 40) / 100
+    width = delta_x - (2 * extremes)
+    height = delta_y - bottom
+    return extremes, 10, width, height
+
 def load_image(image_name):
     image_general = pg.image.load(DIC_PATH + image_name)
     image_dino = [image_general.subsurface(dimension) for dimension in DINOSAUR_DIMENSIONS]
@@ -34,22 +42,24 @@ def load_image(image_name):
     image_floor = [image_general.subsurface(dimension) for dimension in FLOOR_DIMENSIONS]
     return image_dino, images_cactus, image_bird, image_floor
 
-def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor, obj_f_floor):
+def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor, obj_f_floor, space_game):
     display.fill((255, 255, 255))
-    # Entender o método blits
     display.blit(obj_s_floor.current_image, [obj_s_floor.position_x, obj_s_floor.position_y])
     display.blit(obj_f_floor.current_image, [obj_f_floor.position_x, obj_f_floor.position_y])
     display.blit(obj_dino.current_image, [obj_dino.position_x, obj_dino.position_y])
     display.blit(obj_f_cactus.current_image, [obj_f_cactus.position_x, obj_f_cactus.position_y])
     display.blit(obj_s_cactus.current_image, [obj_s_cactus.position_x, obj_s_cactus.position_y])
     display.blit(obj_bird.current_image, [obj_bird.position_x, obj_bird.position_y])
+    pg.draw.rect(display, (0, 0, 0), space_game, 1)
     pg.display.update()
 
 def screen():
     pg.init()
-
-    display = pg.display.set_mode([pg.display.Info().current_w, pg.display.Info().current_h-70])
+    delta_x, delta_y = (pg.display.Info().current_w, pg.display.Info().current_h)
+    display = pg.display.set_mode([pg.display.Info().current_w, pg.display.Info().current_h])
     pg.display.set_caption("T-Rex Running")
+
+    space_game = dimensions_game(delta_x, delta_y)
 
     image_dino, images_cactus, image_bird, image_floor = load_image("/assets/image_general.png")
     t_rex = dino.Dinosaur(200, 350, image_dino)
@@ -69,11 +79,11 @@ def screen():
     jump_count = 10
     count_frame_bird = 0
     count_frame_dino = 0
-    speed = 10
+    speed = 4
     game_time = 0
 
     while close is not True:
-        pg.time.delay(30)
+        pg.time.delay(5)
 
         start_floor.speed_up(speed)
         final_floor.speed_up(speed)
@@ -83,8 +93,10 @@ def screen():
 
         game_time += speed
 
-        # if game_time > 400:
+        # print('game time ', game_time)
+        # if game_time > 4000:
         #     game_time = 0
+        #     print('velocidade', speed)
         #     speed += 5
 
         for event in pg.event.get():
@@ -125,6 +137,8 @@ def screen():
                 count_frame_bird = 0
             count_frame_bird += 1
 
+        # função que criar obstaculo sempre será chamada
+        # mas somente será criado se os parâmetros permitirem
         if first_cactus.position_x < 100 and obstacle_cactus is False:
             second_cactus.choose_image(RIGHT_SCREEN, start_floor)
             obstacle_cactus = True
@@ -140,7 +154,7 @@ def screen():
         start_floor.move()
         final_floor.move()
 
-        render(display, t_rex, first_cactus, second_cactus, bird, start_floor, final_floor)
+        render(display, t_rex, first_cactus, second_cactus, bird, start_floor, final_floor, space_game)
     pg.quit()
 
 
