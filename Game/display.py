@@ -28,11 +28,13 @@ FLOOR_DIMENSIONS = [[2, 104, 2400, 26]]
 
 def dimensions_game(delta_x, delta_y):
     # Melhorar nomes
-    extremes = (delta_x * 20) / 100
+    sides = (delta_x * 20) / 100
     bottom = (delta_y * 40) / 100
-    width = delta_x - (2 * extremes)
+    width = delta_x - (2 * sides)
     height = delta_y - bottom
-    return extremes, 10, width, height
+    edge_start = sides
+    edge_end = width + sides
+    return [sides, 10, width, height], edge_start, edge_end
 
 def load_image(image_name):
     image_general = pg.image.load(DIC_PATH + image_name)
@@ -59,12 +61,12 @@ def screen():
     display = pg.display.set_mode([pg.display.Info().current_w, pg.display.Info().current_h])
     pg.display.set_caption("T-Rex Running")
 
-    space_game = dimensions_game(delta_x, delta_y)
+    space_game, edge_start, edge_end = dimensions_game(delta_x, delta_y)
 
     image_dino, images_cactus, image_bird, image_floor = load_image("/assets/image_general.png")
-    t_rex = dino.Dinosaur(200, 350, image_dino)
+    t_rex = dino.Dinosaur(edge_start+300, 350, image_dino)
 
-    first_cactus = cac.Cactus(RIGHT_SCREEN, 370, images_cactus)
+    first_cactus = cac.Cactus(edge_end, 370, images_cactus)
     second_cactus = cac.Cactus(LEFT_SCREEN, 370, images_cactus)
 
     bird = bd.Bird(RIGHT_SCREEN, 320, image_bird)
@@ -137,16 +139,13 @@ def screen():
                 count_frame_bird = 0
             count_frame_bird += 1
 
-        # função que criar obstaculo sempre será chamada
-        # mas somente será criado se os parâmetros permitirem
-        if first_cactus.position_x < 100 and obstacle_cactus is False:
-            second_cactus.choose_image(RIGHT_SCREEN, start_floor)
+        if first_cactus.position_x < edge_start and obstacle_cactus is False:
+            second_cactus.choose_image(edge_end, start_floor)
             obstacle_cactus = True
 
-        if second_cactus.position_x < 100 and obstacle_cactus is True:
-            first_cactus.choose_image(RIGHT_SCREEN, start_floor)
+        if second_cactus.position_x < edge_start and obstacle_cactus is True:
+            first_cactus.choose_image(edge_end, start_floor)
             obstacle_cactus = False
-
 
         first_cactus.change_position()
         second_cactus.change_position()
