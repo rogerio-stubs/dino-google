@@ -29,12 +29,13 @@ FLOOR_DIMENSIONS = [[2, 104, 2400, 26]]
 def dimensions_game(delta_x, delta_y):
     # Melhorar nomes
     sides = (delta_x * 20) / 100
-    bottom = (delta_y * 40) / 100
+    bottom = (delta_y * 50) / 100
     width = delta_x - (2 * sides)
     height = delta_y - bottom
     edge_start = sides
     edge_end = width + sides
-    return [sides, 10, width, height], edge_start, edge_end
+    middle = (width / 2) + edge_start - 150
+    return [sides, 10, width, height], edge_start, edge_end, middle
 
 def load_image(image_name):
     image_general = pg.image.load(DIC_PATH + image_name)
@@ -43,6 +44,9 @@ def load_image(image_name):
     image_bird = [image_general.subsurface(dimension) for dimension in BIRD_DIMENSIONS]
     image_floor = [image_general.subsurface(dimension) for dimension in FLOOR_DIMENSIONS]
     return image_dino, images_cactus, image_bird, image_floor
+
+def collisions():
+    pass
 
 def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor, obj_f_floor, space_game):
     display.fill((255, 255, 255))
@@ -53,6 +57,9 @@ def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor,
     display.blit(obj_s_cactus.current_image, [obj_s_cactus.position_x, obj_s_cactus.position_y])
     display.blit(obj_bird.current_image, [obj_bird.position_x, obj_bird.position_y])
     pg.draw.rect(display, (0, 0, 0), space_game, 1)
+    # Melhorar essas duas linhas
+    pg.draw.rect(display, (255, 255, 255), [0, 10, space_game[0], space_game[3]])
+    pg.draw.rect(display, (255, 255, 255), [space_game[2]+space_game[0], 10, space_game[2], space_game[3]])
     pg.display.update()
 
 def screen():
@@ -61,7 +68,7 @@ def screen():
     display = pg.display.set_mode([pg.display.Info().current_w, pg.display.Info().current_h])
     pg.display.set_caption("T-Rex Running")
 
-    space_game, edge_start, edge_end = dimensions_game(delta_x, delta_y)
+    space_game, edge_start, edge_end, middle = dimensions_game(delta_x, delta_y)
 
     image_dino, images_cactus, image_bird, image_floor = load_image("/assets/image_general.png")
     t_rex = dino.Dinosaur(edge_start+300, 350, image_dino)
@@ -139,22 +146,22 @@ def screen():
                 count_frame_bird = 0
             count_frame_bird += 1
 
-        if first_cactus.position_x < edge_start and obstacle_cactus is False:
+        if first_cactus.position_x < middle and obstacle_cactus is False:
             second_cactus.choose_image(edge_end, start_floor)
             obstacle_cactus = True
 
-        if second_cactus.position_x < edge_start and obstacle_cactus is True:
+        if second_cactus.position_x < middle and obstacle_cactus is True:
             first_cactus.choose_image(edge_end, start_floor)
             obstacle_cactus = False
+
+        collisions()
 
         first_cactus.change_position()
         second_cactus.change_position()
         bird.change_position()
         start_floor.move()
         final_floor.move()
-
         render(display, t_rex, first_cactus, second_cactus, bird, start_floor, final_floor, space_game)
     pg.quit()
-
 
 screen()
