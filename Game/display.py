@@ -10,12 +10,6 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
 
 DIC_PATH = os.path.abspath(os.path.dirname(__file__))
 
-SQUARE_X, SQUARE_Y = 800, 800
-
-RIGHT_SCREEN = SQUARE_X + 5
-
-LEFT_SCREEN = SQUARE_X * -1
-
 CACTUS_DIMENSIONS = [[446, 0, 34, 72], [480, 0, 68, 72], [548, 0, 102, 72],
                      [652, 0, 50, 102], [702, 0, 102, 102], [802, 0, 150, 102]]
 
@@ -37,6 +31,12 @@ def dimensions_game(delta_x, delta_y):
     middle = (width / 2) + edge_start - 150
     return [sides, 10, width, height], edge_start, edge_end, middle
 
+def position_game(space_game):
+    # Gera a posição dinamica 
+    # dos objetos
+    # lebrar que os mesmo são desenhados de cima para baixo
+    pass
+
 def load_image(image_name):
     image_general = pg.image.load(DIC_PATH + image_name)
     image_dino = [image_general.subsurface(dimension) for dimension in DINOSAUR_DIMENSIONS]
@@ -45,8 +45,14 @@ def load_image(image_name):
     image_floor = [image_general.subsurface(dimension) for dimension in FLOOR_DIMENSIONS]
     return image_dino, images_cactus, image_bird, image_floor
 
-def collisions():
-    pass
+def collisions(t_rex, cactus1, cactus2):
+    dinos = t_rex.current_image.get_rect()
+    cacto = cactus1.current_image.get_rect()
+    print(dinos)
+    print(cacto)
+    # if dinos.collidepoint(cacto):
+    #     return True
+    return False
 
 def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor, obj_f_floor, space_game):
     display.fill((255, 255, 255))
@@ -55,7 +61,7 @@ def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor,
     display.blit(obj_dino.current_image, [obj_dino.position_x, obj_dino.position_y])
     display.blit(obj_f_cactus.current_image, [obj_f_cactus.position_x, obj_f_cactus.position_y])
     display.blit(obj_s_cactus.current_image, [obj_s_cactus.position_x, obj_s_cactus.position_y])
-    display.blit(obj_bird.current_image, [obj_bird.position_x, obj_bird.position_y])
+    # display.blit(obj_bird.current_image, [obj_bird.position_x, obj_bird.position_y])
     pg.draw.rect(display, (0, 0, 0), space_game, 1)
     # Melhorar essas duas linhas
     pg.draw.rect(display, (255, 255, 255), [0, 10, space_game[0], space_game[3]])
@@ -69,14 +75,15 @@ def screen():
     pg.display.set_caption("T-Rex Running")
 
     space_game, edge_start, edge_end, middle = dimensions_game(delta_x, delta_y)
+    # position_x, position_y = position_game(space_game)
 
     image_dino, images_cactus, image_bird, image_floor = load_image("/assets/image_general.png")
     t_rex = dino.Dinosaur(edge_start+300, 350, image_dino)
 
     first_cactus = cac.Cactus(edge_end, 370, images_cactus)
-    second_cactus = cac.Cactus(LEFT_SCREEN, 370, images_cactus)
+    second_cactus = cac.Cactus(edge_start, 370, images_cactus)
 
-    bird = bd.Bird(RIGHT_SCREEN, 320, image_bird)
+    bird = bd.Bird(edge_end, 320, image_bird)
 
     start_floor = bg.Background(0, 420, image_floor)
     final_floor = bg.Background(2400, 420, image_floor)
@@ -94,6 +101,7 @@ def screen():
     while close is not True:
         pg.time.delay(5)
 
+        # Como otimizar esse bloco
         start_floor.speed_up(speed)
         final_floor.speed_up(speed)
         bird.speed_up(speed)
@@ -154,13 +162,13 @@ def screen():
             first_cactus.choose_image(edge_end, start_floor)
             obstacle_cactus = False
 
-        collisions()
+        if collisions(t_rex, first_cactus, second_cactus) is False:
+            first_cactus.change_position()
+            second_cactus.change_position()
+            bird.change_position()
+            start_floor.move()
+            final_floor.move()
 
-        first_cactus.change_position()
-        second_cactus.change_position()
-        bird.change_position()
-        start_floor.move()
-        final_floor.move()
         render(display, t_rex, first_cactus, second_cactus, bird, start_floor, final_floor, space_game)
     pg.quit()
 
