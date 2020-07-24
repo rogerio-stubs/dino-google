@@ -32,9 +32,9 @@ def dimensions_game(delta_x, delta_y):
     return [sides, 10, width, height], edge_start, edge_end, middle
 
 def position_game(space_game):
-    # Gera a posição dinamica 
+    # Gera a posição dinamica
     # dos objetos
-    # lebrar que os mesmo são desenhados de cima para baixo
+    # lembrar que os mesmo são desenhados de cima para baixo
     pass
 
 def load_image(image_name):
@@ -44,15 +44,6 @@ def load_image(image_name):
     image_bird = [image_general.subsurface(dimension) for dimension in BIRD_DIMENSIONS]
     image_floor = [image_general.subsurface(dimension) for dimension in FLOOR_DIMENSIONS]
     return image_dino, images_cactus, image_bird, image_floor
-
-def collisions(t_rex, cactus1, cactus2):
-    dinos = t_rex.current_image.get_rect()
-    cacto = cactus1.current_image.get_rect()
-    print(dinos)
-    print(cacto)
-    # if dinos.collidepoint(cacto):
-    #     return True
-    return False
 
 def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor, obj_f_floor, space_game):
     display.fill((255, 255, 255))
@@ -162,13 +153,14 @@ def screen():
             first_cactus.choose_image(edge_end, start_floor)
             obstacle_cactus = False
 
-        if collisions(t_rex, first_cactus, second_cactus) is False:
+        if t_rex.collided(first_cactus):
             first_cactus.change_position()
             second_cactus.change_position()
             bird.change_position()
             start_floor.move()
             final_floor.move()
 
+        pg.display.update()
         render(display, t_rex, first_cactus, second_cactus, bird, start_floor, final_floor, space_game)
     pg.quit()
 
