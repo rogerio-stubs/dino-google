@@ -34,11 +34,12 @@ def screen():
     jump_count = 10
     count_frame_bird = 0
     count_frame_dino = 0
-    speed = 4
+    speed = 10
     game_time = 0
+    clock = pg.time.Clock()
 
     while close is not True:
-        pg.time.delay(5)
+        clock.tick(60)
 
         # Como otimizar esse bloco
         start_floor.speed_up(speed)
@@ -54,12 +55,11 @@ def screen():
         #     game_time = 0
         #     print('velocidade', speed)
         #     speed += 5
+        keys = pg.key.get_pressed()
 
         for event in pg.event.get():
-            if event.type == pg.QUIT:
+            if event.type == pg.QUIT or keys[pg.K_ESCAPE]:
                 close = True
-
-        keys = pg.key.get_pressed()
 
         if keys[pg.K_UP]:
             is_jump = True

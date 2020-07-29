@@ -53,4 +53,4 @@ def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor,
     pg.draw.rect(display, (255, 255, 255), [0, 10, space_game[0], space_game[3]])
     pg.draw.rect(display, (255, 255, 255), [space_game[2]+space_game[0], 10, space_game[2], space_game[3]])
     pg.display.update()
-    
+        

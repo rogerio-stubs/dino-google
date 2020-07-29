@@ -34,6 +34,7 @@ class Dinosaur(object):
             self.index = True
 
     def collided(self, cactus):
+        print(cactus)
         # width = self.position_x + self.current_image.get_width()
         # if cactus.position_x < width:
         #     return False
