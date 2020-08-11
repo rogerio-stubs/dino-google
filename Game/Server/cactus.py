@@ -1,12 +1,13 @@
 import random
 
-class Cactus(object):
+class Cactus():
     def __init__(self, position_x, position_y, images):
         self.position_x = position_x
         self.position_y = position_y
         self.images = images
         self.speed = 0
         self.current_image = self.images[0]
+        self.dimensions = self.current_image.get_rect()
 
     def choose_image(self, size_x, floor):
         indice = random.choice(range(0, 5))

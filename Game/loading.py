@@ -40,6 +40,15 @@ def load_image(image_name):
     image_floor = [image_general.subsurface(dimension) for dimension in FLOOR_DIMENSIONS]
     return image_dino, images_cactus, image_bird, image_floor
 
+def random_obstacle(cactus1, cactus2, middle, obstacle_cactus, parameters):
+    if cactus1.position_x < middle and obstacle_cactus is False:
+        cactus2.choose_image(parameters)
+        obstacle_cactus = True
+
+    if cactus2.position_x < middle and obstacle_cactus is True:
+        cactus1.choose_image(parameters)
+        obstacle_cactus = False
+
 def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor, obj_f_floor, space_game):
     display.fill((255, 255, 255))
     display.blit(obj_s_floor.current_image, [obj_s_floor.position_x, obj_s_floor.position_y])

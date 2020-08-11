@@ -19,19 +19,20 @@ def screen():
     image_dino, images_cactus, image_bird, image_floor = ld.load_image("/assets/image_general.png")
     t_rex = dino.Dinosaur(edge_start+300, 350, image_dino)
 
-    first_cactus = cac.Cactus(edge_end, 370, images_cactus)
-    second_cactus = cac.Cactus(edge_start, 370, images_cactus)
+    cactus1 = cac.Cactus(edge_end, 370, images_cactus)
+    cactus2 = cac.Cactus(edge_start, 370, images_cactus)
 
     bird = bd.Bird(edge_end, 320, image_bird)
 
     start_floor = bg.Background(0, 420, image_floor)
+
     final_floor = bg.Background(2400, 420, image_floor)
 
     close = False
     is_jump = False
     is_down = False
     obstacle_cactus = False
-    jump_count = 10
+    jump_count = 12
     count_frame_bird = 0
     count_frame_dino = 0
     speed = 10
@@ -45,16 +46,10 @@ def screen():
         start_floor.speed_up(speed)
         final_floor.speed_up(speed)
         bird.speed_up(speed)
-        first_cactus.speed_up(speed)
-        second_cactus.speed_up(speed)
+        cactus1.speed_up(speed)
+        cactus2.speed_up(speed)
 
-        game_time += speed
-
-        # print('game time ', game_time)
-        # if game_time > 4000:
-        #     game_time = 0
-        #     print('velocidade', speed)
-        #     speed += 5
+        game_time += 1
         keys = pg.key.get_pressed()
 
         for event in pg.event.get():
@@ -68,11 +63,11 @@ def screen():
             is_down = True
 
         if is_jump:
-            if jump_count >= -10:
+            if jump_count >= -12:
                 t_rex.jump(jump_count)
                 jump_count -= 1
             else:
-                jump_count = 10
+                jump_count = 12
                 is_jump = False
         elif is_down:
             if count_frame_dino > 3:
@@ -93,23 +88,23 @@ def screen():
                 count_frame_bird = 0
             count_frame_bird += 1
 
-        if first_cactus.position_x < middle and obstacle_cactus is False:
-            second_cactus.choose_image(edge_end, start_floor)
+        if cactus1.position_x < middle and obstacle_cactus is False:
+            cactus2.choose_image(edge_end, start_floor)
             obstacle_cactus = True
 
-        if second_cactus.position_x < middle and obstacle_cactus is True:
-            first_cactus.choose_image(edge_end, start_floor)
+        if cactus2.position_x < middle and obstacle_cactus is True:
+            cactus1.choose_image(edge_end, start_floor)
             obstacle_cactus = False
 
-        if t_rex.collided(first_cactus):
-            first_cactus.change_position()
-            second_cactus.change_position()
-            bird.change_position()
-            start_floor.move()
-            final_floor.move()
+        close = t_rex.collided([cactus1, cactus2])
+        cactus1.change_position()
+        cactus2.change_position()
+        bird.change_position()
+        start_floor.move()
+        final_floor.move()
 
         pg.display.update()
-        ld.render(display, t_rex, first_cactus, second_cactus, bird, start_floor, final_floor, space_game)
+        ld.render(display, t_rex, cactus1, cactus2, bird, start_floor, final_floor, space_game)
     pg.quit()
 
 screen()

@@ -1,5 +1,8 @@
+import pygame as pg
+
 class Dinosaur(object):
     def __init__(self, position_x, position_y, images):
+        self.floor = position_x
         self.position_x = position_x
         self.position_y = position_y
         self.images = images
@@ -15,6 +18,7 @@ class Dinosaur(object):
         self.position_y = floor.position_y + dimensions_floor[3] - dimensions_dino[3]
 
     def jump(self, jump_count):
+        # Colocar o pulo aqui
         self.position_y -= (jump_count * abs(jump_count)) * 0.2
         self.current_image = self.image_jump[0]
 
@@ -33,10 +37,12 @@ class Dinosaur(object):
         else:
             self.index = True
 
-    def collided(self, cactus):
-        print(cactus)
-        # width = self.position_x + self.current_image.get_width()
-        # if cactus.position_x < width:
-        #     return False
-
-        return True
+    def collided(self, objs):
+        list_objs = list()
+        for obj in objs:
+            list_objs.append([obj.position_x, obj.position_y, obj.dimensions[2]-10, obj.dimensions[3]])
+        
+        coordinates_dino = pg.Rect(self.position_x, self.position_y, self.current_image.get_rect()[2], self.current_image.get_rect()[3])
+        if coordinates_dino.collidelist(list_objs) >= 0:
+            return True
+        return False
