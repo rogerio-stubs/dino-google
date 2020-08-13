@@ -27,9 +27,6 @@ def dimensions_game(delta_x, delta_y):
     return [sides, 10, width, height], edge_start, edge_end, middle
 
 def position_game(space_game):
-    # Gera a posição dinamica
-    # dos objetos
-    # lembrar que os mesmo são desenhados de cima para baixo
     pass
 
 def load_image(image_name):
@@ -58,7 +55,6 @@ def render(display, obj_dino, obj_f_cactus, obj_s_cactus, obj_bird, obj_s_floor,
     display.blit(obj_s_cactus.current_image, [obj_s_cactus.position_x, obj_s_cactus.position_y])
     # display.blit(obj_bird.current_image, [obj_bird.position_x, obj_bird.position_y])
     pg.draw.rect(display, (0, 0, 0), space_game, 1)
-    # Melhorar essas duas linhas
     pg.draw.rect(display, (255, 255, 255), [0, 10, space_game[0], space_game[3]])
     pg.draw.rect(display, (255, 255, 255), [space_game[2]+space_game[0], 10, space_game[2], space_game[3]])
     pg.display.update()

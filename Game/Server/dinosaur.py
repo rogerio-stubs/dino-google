@@ -7,7 +7,7 @@ class Dinosaur(object):
         self.position_y = position_y
         self.images = images
         self.index = True
-        self.current_image = self.images[0] # alterar para inicial
+        self.current_image = self.images[0] 
         self.image_jump = [self.images[0]]
         self.image_walk = [self.images[1], self.images[2]]
         self.image_down = [self.images[3], self.images[4]]
@@ -18,7 +18,6 @@ class Dinosaur(object):
         self.position_y = floor.position_y + dimensions_floor[3] - dimensions_dino[3]
 
     def jump(self, jump_count):
-        # Colocar o pulo aqui
         self.position_y -= (jump_count * abs(jump_count)) * 0.2
         self.current_image = self.image_jump[0]
 

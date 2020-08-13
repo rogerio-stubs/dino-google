@@ -42,7 +42,6 @@ def screen():
     while close is not True:
         clock.tick(60)
 
-        # Como otimizar esse bloco
         start_floor.speed_up(speed)
         final_floor.speed_up(speed)
         bird.speed_up(speed)
